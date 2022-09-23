@@ -25,7 +25,7 @@ class HomeController extends Controller
         $user_id = auth()->user()->id;
         $check = DB::select("SELECT *,(SELECT COUNT(*) FROM user_points WHERE user_points.service_id=$service_id AND user_points.user_id=$user_id) AS is_started_before FROM user_points WHERE user_points.user_id=$user_id AND service_id=$service_id");
        
-        if($check[0]->points>0 && $check[0]->is_started_before>0 ){
+        if($check != null && $check[0]->points>0 && $check[0]->is_started_before>0 ){
            return DB::update("UPDATE user_points SET points=0 WHERE service_id=$service_id AND user_id=$user_id");
         }
     }
