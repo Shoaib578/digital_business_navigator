@@ -19,14 +19,7 @@ class StartServiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function check_service_score($service_id){
-        $user_id = auth()->user()->id;
-        $check = DB::select("SELECT *,(SELECT COUNT(*) FROM user_points WHERE user_points.service_id=$service_id AND user_points.user_id=$user_id) AS is_started_before FROM services WHERE services.id=$service_id");
-
-        if($check[0]->is_started_before>0){
-            DB::update("UPDATE user_points SET points=0 WHERE service_id=$service_id AND user_id=$user_id");
-        }
-    }
+   
     
     public function index(Request $request,$id,$page_number)
     {
@@ -34,7 +27,6 @@ class StartServiceController extends Controller
             return redirect()->route('admin_home');
         }
 
-        $this->check_service_score($id);
         $my_id = auth()->user()->id;
         $service = Services::find($id);
 
@@ -67,6 +59,7 @@ class StartServiceController extends Controller
         if($points_query != null){
             $points = $points_query[0]->points;
         }
+       
         return view("main/start_service/index",["host" => $host,"questions"=>$questions,"service"=>$service,"answers"=>$answers,"questions_count"=>$questions_count,"user_id"=>auth()->user()->id,"points"=>$points]);
     }
 

@@ -20,6 +20,16 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function check_service_score($service_id){
+        $user_id = auth()->user()->id;
+        $check = DB::select("SELECT *,(SELECT COUNT(*) FROM user_points WHERE user_points.service_id=$service_id AND user_points.user_id=$user_id) AS is_started_before FROM user_points WHERE user_points.user_id=$user_id AND service_id=$service_id");
+       
+        if($check[0]->points>0 && $check[0]->is_started_before>0 ){
+           return DB::update("UPDATE user_points SET points=0 WHERE service_id=$service_id AND user_id=$user_id");
+        }
+    }
+
     public function index(Request $request)
     {
         if(auth()->user()->is_admin>0){
@@ -98,7 +108,7 @@ class HomeController extends Controller
             return redirect()->route('admin_home');
         }
         $my_id = auth()->user()->id;
-
+        $this->check_service_score($id);
         $service = Services::find($id);
         $host = $request->getSchemeAndHttpHost();
         $check_service = DB::select("SELECT *,(SELECT count(*) FROM user_bought_services WHERE user_bought_services.service_id=$id AND user_bought_services.user_id=$my_id) as is_bought FROM services WHERE id=$id");

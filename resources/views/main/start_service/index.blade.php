@@ -13,6 +13,8 @@
 		<div class="row align-items-center">
 			<div class="col-md-6 order-2 order-md-1 text-center text-md-left">
 				@if(request('page_number')+1 > $questions_count)
+
+				<h3 style="color:white;">Please Reload the page so that make sure you have got the correct score</h3>
 				<center>
 					<h1 style="color:white;font-weight:bold;">Your Score is {{ $points}}/100</h1>
 				</center>
@@ -66,7 +68,7 @@ function next(){
 	$("#next").on(
         'click',()=>{
 
-			console.log("next")
+			
 			$.ajaxSetup({
                   headers: {
                       'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -85,8 +87,10 @@ function next(){
                   }});
 
 			
+				 
 		
 		});
+
 }
 
  
@@ -96,9 +100,10 @@ function next(){
    
   
   if ($box.is(":checked")) {
+	next();
+
     // the name of the box is retrieved using the .attr() method
     // as it is assumed and expected to be immutable
-	next();
     var group = "input:checkbox[name='" + $box.attr("name") + "']";
     // the checked state of the group/box on the other hand will change
     // and the current value is retrieved using .prop() method
